@@ -1,0 +1,30 @@
+<form class="login-form" [formGroup]="loginForm">
+  <div>
+    <md-form-field class="form-field">
+      <input type="email" mdInput placeholder="Email" [formControl]="emailControl">
+      <md-error *ngIf="emailControl.hasError('required')">
+        Email is required
+      </md-error>
+      <md-error *ngIf="errorEmail">
+        {{errorEmail}}
+      </md-error>
+    </md-form-field>
+  </div>
+
+  <div>
+    <md-form-field class="form-field">
+      <input type="password" mdInput placeholder="Password" [formControl]="passwordControl">
+      <md-error *ngIf="passwordControl.hasError('required')">
+        Password is required
+      </md-error>
+      <md-error *ngIf="errorPassword">
+        {{errorPassword}}
+      </md-error>
+    </md-form-field>
+  </div>
+
+  <div>
+    <button md-raised-button class="center-aligned" color="primary" (click)="signIn()">Sign In</button>
+  </div>
+  <md-spinner class="center-aligned" *ngIf="loading"></md-spinner>
+</form>

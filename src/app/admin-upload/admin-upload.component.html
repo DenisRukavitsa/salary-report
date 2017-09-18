@@ -1,0 +1,18 @@
+<md-card>
+  <md-form-field class="full-width">
+    <textarea mdInput mdTextareaAutosize mdAutosizeMinRows="2" placeholder="Salary" #data></textarea>
+    <md-hint align="start">Specify salary here using format "Name Surname,salary,year,month"</md-hint>
+  </md-form-field>
+  
+  <div>
+    <button *ngIf="data.value" md-raised-button class="submit-btn" color="primary" 
+            (click)="submitData(data)">Submit</button>
+    <button *ngIf="!data.value" md-raised-button class="submit-btn" disabled>Submit</button>
+  </div>
+  
+  <div *ngFor="let result of submittingResults">
+    <p>{{result}}</p>
+  </div>
+  
+  <md-spinner *ngIf="loading"></md-spinner>
+</md-card>

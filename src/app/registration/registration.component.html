@@ -1,0 +1,42 @@
+<md-progress-bar mode="indeterminate" *ngIf="loading"></md-progress-bar>
+
+<md-card *ngIf="!loading && !userService.isChangingUser()">
+    <div *ngIf="isUserSignedIn">
+        <p *ngIf="!isCorrectUserDomain">You can sign up for the system only using 
+          <span class="bold-text">@donriver.com email</span>.
+        </p>
+        <div *ngIf="isCorrectUserDomain">
+            <div *ngIf="!isEmployeeRegistered">
+                <p>Salary Report App uses asynchronous encryption to guarantee a high security of data. 
+                   To make it work you need to generate a key pair. 
+                   A public key from this pair will be stored on the app's server along with your credentials. 
+                   A private key will be stored in the local storage of your browser.
+                   Also, you should download the private key to your PC for the case when 
+                   the local storage of your browser is cleared, or you want to change your browser, etc.
+                   But never share your private key anywhere in order 
+                   to keep your salary in secret from not intended persons.
+                </p>
+                <p> 
+                   Sounds good? Generate key pair right now and then download private key to your PC.
+                </p>
+                <button md-raised-button color="primary" *ngIf="!alreadyRegistered"
+                        (click)="generateKeyPair()">Generate key pair</button>
+            </div>
+
+            <div *ngIf="isEmployeeRegistered">
+              <div *ngIf="!isJustRegistered">
+                <p>Your account is already registered in the system.</p>
+                <button md-raised-button color="primary" routerLink="/report">Check Salary Report</button>
+              </div>
+              <div *ngIf="isJustRegistered">
+                  <p>
+                     Your account is successfully registered in the system and key pair is generated for you.
+                     Download your private key right now.
+                  </p>
+                  <button md-raised-button color="primary" 
+                          (click)="downloadPrivateKey()">Download private key</button>
+              </div>
+            </div>
+        </div>
+    </div>
+</md-card>

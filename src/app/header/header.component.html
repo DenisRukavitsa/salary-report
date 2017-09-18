@@ -1,0 +1,23 @@
+<md-spinner *ngIf="userService.isChangingUser()"></md-spinner>
+<md-toolbar color="primary" *ngIf="!userService.isChangingUser()">
+  <span>Salary Report</span>
+  <span class="spacer"></span>
+  
+  <div *ngIf="!userService.isAdminPart">
+    <div *ngIf="userService.isAdminSignedIn() || !userService.isUserSignedIn()">
+      <button md-button routerLink="/report">Sign In</button>
+      <button md-button routerLink="/registration">Sign Up</button>
+    </div>
+    <div *ngIf="!userService.isAdminSignedIn() && userService.isUserSignedIn()">
+      <span>Hi, {{userService.getUserName()}}</span>
+      <button md-button (click)="signOut()" routerLink="/">Sign Out</button>
+    </div>
+  </div>
+
+  <div *ngIf="userService.isAdminPart">
+    <div *ngIf="userService.isAdminSignedIn()">
+      <span>Hi, Admin</span>
+      <button md-button (click)="signOut()">Sign Out</button>
+    </div>
+  </div>
+</md-toolbar>

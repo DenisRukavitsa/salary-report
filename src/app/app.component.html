@@ -1,0 +1,5 @@
+<md-spinner *ngIf="userService.isChangingUser()"></md-spinner>
+<div *ngIf="!userService.isChangingUser()">
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+</div>

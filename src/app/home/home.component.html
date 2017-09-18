@@ -1,0 +1,15 @@
+<md-card>
+  <p>Welcome to the Salary Report app.</p>
+  <div *ngIf="!userService.isUserSignedIn() || userService.isAdminSignedIn()">  
+    <p>
+      Please sign up for the system using <span class="bold-text">@donriver.com email</span> if you are not registered yet.
+    </p>
+    <p> 
+      If you are already registered, sign in using <span class="bold-text">@donriver.com email</span> to see the Salary Report.
+    </p>
+  </div>
+
+  <div *ngIf="userService.isUserSignedIn() && !userService.isAdminSignedIn()">
+    <button md-raised-button color="primary" routerLink="/report">Check Salary Report</button>
+  </div>
+</md-card>
