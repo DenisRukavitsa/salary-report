@@ -12,7 +12,8 @@ import { MdToolbarModule,
          MdProgressSpinnerModule,
          MdProgressBarModule,
          MdCardModule,
-         MdInputModule } from '@angular/material';
+         MdInputModule,
+         MdDialogModule } from '@angular/material';
 
 import { EmployeeService } from './employee-service/employee.service';
 import { UserService } from './user-service/user.service';
@@ -26,6 +27,7 @@ import { AdminComponent } from './admin/admin.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminUploadComponent } from './admin-upload/admin-upload.component';
 import { HomeComponent } from './home/home.component';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 
 export const firebaseConfig = {
     apiKey: 'AIzaSyCyi-sODqrwUhgU2HO0lE-mhPDZn8co29Y',
@@ -45,7 +47,11 @@ export const firebaseConfig = {
     AdminComponent,
     AdminLoginComponent,
     AdminUploadComponent,
-    HomeComponent
+    HomeComponent,
+    ErrorDialogComponent
+  ],
+  entryComponents: [
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +73,8 @@ export const firebaseConfig = {
     MdProgressSpinnerModule,
     MdProgressBarModule,
     MdCardModule,
-    MdInputModule
+    MdInputModule,
+    MdDialogModule
   ],
   providers: [SalaryService, CipherService, UserService, EmployeeService],
   bootstrap: [AppComponent]

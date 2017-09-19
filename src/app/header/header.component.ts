@@ -14,7 +14,11 @@ export class HeaderComponent implements OnInit {
   }
 
   signOut() {
-    this.userService.signOut();
+    try {
+      this.userService.signOut();
+    } catch (Error) {
+      console.log('!!!');
+    }
   }
 
   signIn() {

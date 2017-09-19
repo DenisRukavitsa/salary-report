@@ -1,34 +1,21 @@
 <md-progress-bar mode="indeterminate" *ngIf="loading"></md-progress-bar>
 
 <md-card *ngIf="!loading && !userService.isChangingUser()">
-  <div *ngIf="isUserSignedIn">
-    <p *ngIf="!isCorrectUserDomain">
-        Please sign in using <span class="bold-text">@donriver.com email</span>.</p>
-    <div *ngIf="isCorrectUserDomain">
-        <div *ngIf="!isEmployeeRegistered">
-            <p>Your account is not registered in the system. Please sign up for the system first.</p>
-            <button md-raised-button color="primary" routerLink="/registration">Sign up</button>
-        </div>
-        <div *ngIf="isEmployeeRegistered">
-            <div *ngIf="!isPrivateKeyFound">
-                <p *ngIf="!isIncorrectKeyUploaded">
-                    There is no private key in local storage of your browser. Please upload it.
-                </p>
-                <p class="bold-text" *ngIf="isIncorrectKeyUploaded">
-                    The uploaded key doesn't look like a valid one. Please try once more.
-                </p>
-                <input type="file" (change)="privateKeyUploaded($event)">
+    <div *ngIf="isUserSignedIn">
+        <p *ngIf="!isCorrectUserDomain">
+            Please sign in using <span class="bold-text">@donriver.com email</span>.
+        </p>
+        <div *ngIf="isCorrectUserDomain">
+            <div *ngIf="!isEmployeeRegistered">
+                <p>Your account is not registered in the system. Please sign up for the system first.</p>
+                <button md-raised-button color="primary" routerLink="/registration">Sign up</button>
             </div>
-            <div *ngIf="isPrivateKeyFound">
-                <div *ngIf="decryptionError">
-                    <p>
-                        An error occurred during decrypting the data. 
-                        Usually this happens when the private key in the local storage of your browser is incorrect.
-                        Please upload your private key right now.
-                    </p>
+            <div *ngIf="isEmployeeRegistered">
+                <div *ngIf="!isPrivateKeyFound">
+                    <p>Please upload your private key</p>
                     <input type="file" (change)="privateKeyUploaded($event)">
                 </div>
-                <div *ngIf="!decryptionError">
+                <div *ngIf="isPrivateKeyFound">
                     <div *ngIf="userSalaries">
                         <p *ngFor="let salary of userSalaries" class="salaries">
                             <span>Your salary for </span>
@@ -38,12 +25,11 @@
                         </p>
                     </div>
                     <p *ngIf="!userSalaries || userSalaries.length === 0">
-                    No data found using your credentials.
-                    Usually this means that the accountant haven't uploaded data for your account yet.
+                        No data found using your credentials.
+                        Usually this means that the accountant haven't uploaded data for your account yet.
                     </p>
                 </div>
             </div>
         </div>
     </div>
-  </div>
 </md-card>

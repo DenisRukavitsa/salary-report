@@ -1,5 +1,5 @@
 import { EmployeeService } from '../employee-service/employee.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../user-service/user.service';
 import * as saver from 'file-saver';
 
@@ -8,7 +8,7 @@ import * as saver from 'file-saver';
   templateUrl: './registration.component.html',
   styleUrls: []
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
   private loading = false;
   private isJustRegistered = false;
   private userName: string;
@@ -27,7 +27,7 @@ export class RegistrationComponent implements OnInit {
       this.userEmail = this.userService.getUserEmail();
       this.isUserSignedIn = this.userService.isUserSignedIn();
       this.isCorrectUserDomain = this.userService.isCorrectUserDomain();
-      this.employeeService.isEmployeeRegistered(this.userEmail, isRegistered => {
+      this.employeeService.isEmployeeRegistered(this.userEmail).then(isRegistered => {
         this.isEmployeeRegistered = isRegistered;
         this.loading = false;
       });
@@ -41,6 +41,10 @@ export class RegistrationComponent implements OnInit {
         initialize();
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.employeeService.unsubscribe();
   }
 
   signOut() {

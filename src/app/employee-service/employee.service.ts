@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Rx';
 import { UserService } from '../user-service/user.service';
 import { CipherModel } from '../cipher-service/cipher.model';
 import { CipherService } from '../cipher-service/cipher.service';
@@ -8,22 +9,33 @@ import * as firebase from 'firebase/app';
 @Injectable()
 export class EmployeeService {
     private dbRef: FirebaseListObservable<any>;
+    private data: any;
+    private subscriptions: Array<Subscription>;
 
     constructor (private cipherService: CipherService,
                  private angularFireDB: AngularFireDatabase) {
       this.dbRef = this.angularFireDB.list('/employees');
+      this.subscriptions = new Array();
     }
 
-    isEmployeeRegistered(email: string, callback: (isRegistered: boolean) => void) {
-        this.dbRef.forEach(data => {
-            let result = false;
-            data.forEach(element => {
-                if (element.email === email) {
-                    result = true;
-                }
-            });
+    unsubscribe() {
+        this.subscriptions.forEach(subscription => {
+            subscription.unsubscribe();
+        });
+    }
 
-            callback(result);
+    isEmployeeRegistered(email: string): Promise<boolean> {
+        return new Promise(resolve => {
+            this.subscriptions.push(this.dbRef.subscribe(data => {
+                let result = false;
+                data.forEach(element => {
+                    if (element.email === email) {
+                        result = true;
+                    }
+                });
+
+                resolve(result);
+            }));
         });
     }
 
@@ -42,7 +54,7 @@ export class EmployeeService {
 
     getPublicKeyByEmployee(employee: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.dbRef.forEach(data => {
+            this.subscriptions.push(this.dbRef.subscribe(data => {
                 data.forEach(element => {
                     if (element.employee === employee) {
                         resolve(element.publicKey);
@@ -50,7 +62,7 @@ export class EmployeeService {
                         reject();
                     }
                 });
-            });
+            }));
         });
     }
 
