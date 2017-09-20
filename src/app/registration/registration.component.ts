@@ -52,9 +52,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   generateKeyPair() {
+    this.loading = true;
     this.employeeService.registerEmployee(this.userName, this.userEmail).then(privateKey => {
+      this.isEmployeeRegistered = true;
       this.isJustRegistered = true;
       this.privateKey = privateKey;
+      this.loading = false;
     });
   }
 

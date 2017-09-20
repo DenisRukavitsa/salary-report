@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EmployeeService } from '../employee-service/employee.service';
 import { UserService } from '../user-service/user.service';
 import { SalaryService } from '../salary-service/salary.service';
-import {MdDialog} from '@angular/material';
+import { MdDialog } from '@angular/material';
 
 @Component({
   selector: 'app-report',
@@ -15,6 +15,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   private loading = false;
   private userName: string;
   private userEmail: string;
+  private privateKey: string;
   private isUserSignedIn: boolean;
   private isCorrectUserDomain: boolean;
   private isEmployeeRegistered: boolean;
@@ -45,12 +46,6 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
 
   initialize() {
-    this.isPrivateKeyFound = localStorage.getItem('privateKey') !== null;
-    if (!this.isPrivateKeyFound) {
-      this.openErrorDialog(`There is no private key in the local storage of your browser.
-                            Please upload your private key.`);
-    }
-
     this.userName = this.userService.getUserName();
     this.userEmail = this.userService.getUserEmail();
     this.isUserSignedIn = this.userService.isUserSignedIn();
@@ -58,27 +53,31 @@ export class ReportComponent implements OnInit, OnDestroy {
 
     this.employeeService.isEmployeeRegistered(this.userEmail).then(isRegistered => {
       this.isEmployeeRegistered = isRegistered;
-      if (this.isPrivateKeyFound) {
-        this.getSalary();
+
+      this.privateKey = localStorage.getItem('privateKey');
+      if (!this.privateKey) {
+        this.isPrivateKeyFound = false;
+        this.openErrorDialog(`There is no private key in the local storage of your browser.
+                              Please upload your private key.`);
       } else {
-        this.loading = false;
+        this.isPrivateKeyFound = true;
+        this.getSalary();
       }
     });
   }
 
   getSalary() {
-    this.salaryService.getSalaryByEmployee(this.userName, localStorage.getItem('privateKey')).then(salary => {
-      this.isPrivateKeyFound = true;
+    this.salaryService.getSalaryByEmployee(this.userName, this.privateKey).then(salary => {
       this.userSalaries = salary;
       this.loading = false;
     }, error => {
       if (this.privateKeyInput) {
         this.privateKeyInput.value = '';
       }
+
       this.openErrorDialog(`An error occurred during decrypting the data.
                             Usually this happens when incorrect private key was used for decrypting.
                             Please upload your private key.`);
-      this.loading = false;
     });
   }
 
@@ -89,18 +88,19 @@ export class ReportComponent implements OnInit, OnDestroy {
 
     fileReader.onloadend = (event) => {
       this.loading = true;
-      const privateKey = fileReader.result as string;
-      if (privateKey.startsWith('-----BEGIN RSA PRIVATE KEY-----') &&
-          privateKey.includes('-----END RSA PRIVATE KEY-----') &&
-          privateKey.length === 1702) {
-        localStorage.setItem('privateKey', fileReader.result);
+      const privateKeyFromFile = fileReader.result as string;
+
+      if (privateKeyFromFile.startsWith('-----BEGIN RSA PRIVATE KEY-----') &&
+          privateKeyFromFile.includes('-----END RSA PRIVATE KEY-----') &&
+          privateKeyFromFile.length === 1702) {
+        localStorage.setItem('privateKey', privateKeyFromFile);
+        this.privateKey = privateKeyFromFile;
         this.isPrivateKeyFound = true;
         this.getSalary();
       } else {
         this.privateKeyInput.value = '';
-        this.loading = false;
         this.openErrorDialog(`The uploaded key doesn\'t look like a valid one.
-                              Please check it and try once more.`);
+                              Please check it and try again.`);
       }
     };
 
@@ -113,6 +113,8 @@ export class ReportComponent implements OnInit, OnDestroy {
       data: {message: message},
       width: '600px'
     });
+
+    this.loading = false;
   }
 
 }
